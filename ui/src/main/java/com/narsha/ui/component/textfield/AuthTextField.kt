@@ -6,30 +6,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -58,7 +46,6 @@ fun AuthTextField(
 ) {
     val isEnabled = enable && !isLoading
     var isFocused by remember { mutableStateOf(false) }
-    var pressed by remember { mutableStateOf(false) }
     var timer by remember { mutableIntStateOf(300) }
 
     val textColor by animateColorAsState(
@@ -167,18 +154,7 @@ fun AuthTextField(
                         .align(alignment = Alignment.CenterEnd)
                         .then(
                             if (isEnabled) Modifier.pointerInput(Unit) {
-                                awaitPointerEventScope {
-                                    while (true) {
-                                        val event = awaitPointerEvent()
-                                        when (event.type) {
-                                            PointerEventType.Press -> pressed = true
-                                            PointerEventType.Release,
-                                            PointerEventType.Exit -> pressed = false
-
-                                            else -> Unit
-                                        }
-                                    }
-                                }
+                                awaitPointerEventScope {}
                             } else Modifier
                         )
                         .clickable(

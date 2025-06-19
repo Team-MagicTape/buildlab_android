@@ -1,6 +1,5 @@
 package com.narsha.buildlab_android.feature.screen.auth.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.narsha.buildlab_android.BuildLabApplication
