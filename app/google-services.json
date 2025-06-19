@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416506209343",
+    "project_id": "buildlab-2615a",
+    "storage_bucket": "buildlab-2615a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416506209343:android:20d21bca4df7d08a33048a",
+        "android_client_info": {
+          "package_name": "com.narsha.buildlab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGeRSaMedyOE8sdpRsebzeeyZcAiCa4XA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

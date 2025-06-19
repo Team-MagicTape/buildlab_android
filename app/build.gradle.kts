@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,8 +51,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.runtime.android)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,7 +60,31 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.material3)
+    implementation(libs.material)
+    implementation(libs.accompanist.navigation.animation)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
+
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
+    implementation(libs.accompanist.flowlayout)
+    implementation(project(":feature"))
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
 }

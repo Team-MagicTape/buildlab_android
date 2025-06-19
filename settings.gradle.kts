@@ -21,4 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "BuildLab"
 include(":app")
- 
+include(":network")
+include(":data")
+include(":feature")
+include(":datastore")
+include(":ui")
