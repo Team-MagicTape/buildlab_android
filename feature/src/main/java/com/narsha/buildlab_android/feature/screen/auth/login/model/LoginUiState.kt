@@ -1,15 +1,14 @@
 package com.narsha.buildlab_android.feature.screen.auth.login.model
 
-
 data class LoginState (
-    val loginUiState: LoginUiState = LoginUiState.Idle
+    val emailInput: String = "",
+    val passwordInput: String = "",
+    val isLoading: Boolean = false,
+    val saveId: Boolean = false,
+    val autoLogin: Boolean = true,
 )
 
-sealed interface LoginUiState {
-    data object Idle: LoginUiState
-    data object Loading: LoginUiState
-    data class Error(
-        val error: String
-    ): LoginUiState
-    data object Success: LoginUiState
+sealed class LoginSideEffect {
+    object NavigateToHome : LoginSideEffect()
+    data class ShowSnackbar(val message: String) : LoginSideEffect()
 }

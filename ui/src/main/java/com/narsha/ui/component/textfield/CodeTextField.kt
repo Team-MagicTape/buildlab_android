@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -28,9 +29,9 @@ fun CodeTextField(
 ) {
     val animatedColor by animateColorAsState(
         targetValue = if (value.isNotEmpty()) {
-            ColorTheme.colors.liteMain
+            ColorTheme.colors.primary.normal
         } else {
-            ColorTheme.colors.placeHolder
+            ColorTheme.colors.gray.normal
         },
         animationSpec = tween(durationMillis = 50)
     )
@@ -42,7 +43,7 @@ fun CodeTextField(
             .height(56.dp)
             .fillMaxWidth()
             .background(
-                color = ColorTheme.colors.bg,
+                color = Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .border(

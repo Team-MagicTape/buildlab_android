@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,10 +50,14 @@ fun SecondButton(
         label = "clickScale"
     )
 
-    val overlayColor by animateColorAsState(
-        targetValue = if (pressed) Color.Black.copy(alpha = 0.2f) else Color.Transparent,
-        animationSpec = tween(durationMillis = 100),
-        label = "clickOverlayColor"
+    val fillColor by animateColorAsState(
+        targetValue = if (pressed) ColorTheme.colors.gray.lite else ColorTheme.colors.background,
+        animationSpec = tween(durationMillis = 100)
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = if (pressed) ColorTheme.colors.gray.superDark else ColorTheme.colors.black,
+        animationSpec = tween(durationMillis = 100)
     )
 
     Box(
@@ -60,15 +65,14 @@ fun SecondButton(
             .fillMaxWidth()
             .scale(scale)
             .background(
-                color = Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
+                color = fillColor,
+                shape = CircleShape
             )
             .border(
                 width = 2.dp,
-                color = ColorTheme.colors.grayBorder,
-                shape = RoundedCornerShape(8.dp)
+                color = ColorTheme.colors.gray.normal,
+                shape = CircleShape
             )
-            .background(overlayColor, RoundedCornerShape(8.dp))
             .pointerInput(Unit) {
                 awaitPointerEventScope {
                     while (true) {
@@ -88,8 +92,8 @@ fun SecondButton(
                 indication = null,
                 onClick = onClick
             )
-            .padding(horizontal = 18.dp)
-            .height(50.dp)
+            .padding(horizontal = 32.dp)
+            .height(52.dp)
     ) {
         buttonIcon?.let {
             Image(
@@ -98,7 +102,6 @@ fun SecondButton(
                 modifier = Modifier
                     .align(alignment = Alignment.CenterStart)
                     .width(20.dp)
-                    .height(16.dp)
             )
         }
 
@@ -106,7 +109,7 @@ fun SecondButton(
             text = text,
             fontSize = 16.sp,
             fontWeight = FontWeight(600),
-            color = ColorTheme.colors.black,
+            color = textColor,
             modifier = Modifier
                 .align(alignment = Alignment.Center)
         )

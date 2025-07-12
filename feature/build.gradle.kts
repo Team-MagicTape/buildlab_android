@@ -37,9 +37,7 @@ android {
 }
 
 dependencies {
-
     implementation(platform(libs.androidx.compose.bom))
-
     implementation(libs.ui)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.runtime)
@@ -54,5 +52,7 @@ dependencies {
     implementation(libs.play.services.base)
     implementation(libs.play.services.auth)
     implementation(libs.firebase.auth.ktx)
-
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.viewmodel)
+    implementation(libs.orbit.compose)
 }

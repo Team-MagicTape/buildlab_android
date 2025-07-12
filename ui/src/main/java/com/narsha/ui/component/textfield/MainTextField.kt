@@ -18,41 +18,45 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.narsha.ui.theme.color.ColorTheme
 
 @Composable
 fun MainTextField(
-    value: String, onValueChange: (String) -> Unit,
+    value: String,
+    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     hint: String,
-    error: Boolean,
     title: String,
-    imeAction: ImeAction = ImeAction.Done,
-    onImeAction: (() -> Unit)? = null,
+    error: Boolean = false, // 에러 상태는 필요 시 외부에서 제어
+    imeAction: ImeAction = ImeAction.Default,
+    onImeAction: () -> Unit = {},
+    isPassword: Boolean = false, // 비밀번호 필드 여부
     isTitle: Boolean = true
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    val animatedColor by animateColorAsState(
-        targetValue = if (error) {
-            ColorTheme.colors.error
-        } else {
-            if (isFocused) {
-                ColorTheme.colors.liteMain
-            } else {
-                ColorTheme.colors.placeHolder
-            }
+    val borderColor by animateColorAsState(
+        targetValue = when {
+            error -> ColorTheme.colors.error
+            isFocused -> ColorTheme.colors.primary.normal
+            else -> ColorTheme.colors.gray.normal
         },
-        animationSpec = tween(durationMillis = 50)
-    )
-    val titleColor by animateColorAsState(
-        targetValue = if (isFocused) ColorTheme.colors.liteMain else ColorTheme.colors.black,
-        animationSpec = tween(durationMillis = 50)
+        animationSpec = tween(durationMillis = 150),
+        label = "borderColor"
     )
 
-    Column {
+    val titleColor by animateColorAsState(
+        targetValue = if (isFocused) ColorTheme.colors.primary.normal else ColorTheme.colors.black,
+        animationSpec = tween(durationMillis = 150),
+        label = "titleColor"
+    )
+
+    Column(modifier = modifier) {
         if (isTitle) {
             Text(
                 text = title,
@@ -61,56 +65,53 @@ fun MainTextField(
             )
             Spacer(Modifier.height(4.dp))
         }
-        Box(
+
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
-                .background(
-                    color = Color.Transparent,
-                    shape = RoundedCornerShape(8.dp)
-                )
+                .onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused
+                }
                 .border(
                     width = 1.dp,
-                    color = animatedColor,
+                    color = borderColor,
                     shape = RoundedCornerShape(8.dp)
-                ),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            BasicTextField(
-                value = value,
-                onValueChange = onValueChange,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
+                )
+                .padding(horizontal = 14.dp),
+            textStyle = TextStyle(
+                fontSize = 14.sp,
+                color = ColorTheme.colors.black
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
+                imeAction = imeAction
+            ),
+            keyboardActions = KeyboardActions(
+                onAny = { onImeAction() }
+            ),
+            cursorBrush = SolidColor(ColorTheme.colors.primary.normal),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            decorationBox = { innerTextField ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = hint,
+                                color = ColorTheme.colors.gray.normal,
+                                fontSize = 14.sp
+                            )
+                        }
+                        innerTextField()
                     }
-                    .padding(horizontal = 14.dp),
-                textStyle = TextStyle(
-                    fontSize = 14.sp,
-                    color = ColorTheme.colors.black
-                ),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = imeAction
-                ),
-                keyboardActions = KeyboardActions(
-                    onAny = {
-                        onImeAction?.invoke()
-                    }
-                ),
-                cursorBrush = SolidColor(ColorTheme.colors.liteMain),
-                decorationBox = { innerTextField ->
-                    if (value.isEmpty()) {
-                        Text(
-                            text = hint,
-                            color = ColorTheme.colors.placeHolder,
-                            fontSize = 14.sp,
-                            modifier = modifier.align(Alignment.CenterStart)
-                        )
-                    }
-                    innerTextField()
-                },
-                singleLine = true
-            )
-        }
+                }
+            },
+            singleLine = true
+        )
     }
 }

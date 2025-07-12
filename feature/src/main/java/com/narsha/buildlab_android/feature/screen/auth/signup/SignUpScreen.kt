@@ -64,7 +64,7 @@ fun SignUpScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(ColorTheme.colors.bg)
+                .background(ColorTheme.colors.background)
                 .clickable(indication = null, interactionSource = null) {
                     focusManager.clearFocus()
                 }

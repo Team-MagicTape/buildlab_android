@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.narsha.ui.theme.color.ColorTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -57,7 +58,7 @@ fun LoadingDots(
 private object LoadingDotsDefault {
     val DotSize = 8.dp
     val SpacingBetweenDots = 8.dp
-    val DotColor @Composable get() = Color(0xFFC4C5C6).copy(alpha = 0.5F)
+    val DotColor @Composable get() = ColorTheme.colors.white.copy(alpha = 0.5F)
 
     const val COLOR_ANIMATION_DURATION = 500
     const val COLOR_ANIMATION_DELAY = 200L

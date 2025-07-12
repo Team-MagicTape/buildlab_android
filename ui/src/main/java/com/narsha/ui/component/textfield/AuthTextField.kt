@@ -42,19 +42,20 @@ fun AuthTextField(
     isTitle: Boolean = false,
     title: String = "",
     imeAction: ImeAction = ImeAction.Next,
-    onImeAction: (() -> Unit)? = null
+    onImeAction: (() -> Unit)? = null,
+    expand: (Boolean) -> Unit = {},
 ) {
     val isEnabled = enable && !isLoading
     var isFocused by remember { mutableStateOf(false) }
     var timer by remember { mutableIntStateOf(300) }
 
     val textColor by animateColorAsState(
-        targetValue = if (isEnabled) ColorTheme.colors.liteMain else ColorTheme.colors.liteMain.copy(alpha = 0.5f),
+        targetValue = if (isEnabled) ColorTheme.colors.primary.normal else ColorTheme.colors.primary.normal.copy(alpha = 0.5f),
         animationSpec = tween(durationMillis = 50)
     )
 
     val titleColor by animateColorAsState(
-        targetValue = if (isFocused) ColorTheme.colors.liteMain else ColorTheme.colors.black,
+        targetValue = if (isFocused) ColorTheme.colors.primary.normal else ColorTheme.colors.black,
         animationSpec = tween(durationMillis = 50)
     )
 
@@ -63,9 +64,9 @@ fun AuthTextField(
             ColorTheme.colors.error
         } else {
             if (isFocused) {
-                ColorTheme.colors.liteMain
+                ColorTheme.colors.primary.normal
             } else {
-                ColorTheme.colors.placeHolder
+                ColorTheme.colors.gray.normal
             }
         },
         animationSpec = tween(durationMillis = 50)
@@ -73,7 +74,7 @@ fun AuthTextField(
 
     LaunchedEffect(showTimer) {
         if (showTimer) {
-            for (i in 300 downTo 0) {
+            for (i in 300 downTo 1) {
                 delay(1000)
                 timer -= 1
             }
@@ -112,17 +113,18 @@ fun AuthTextField(
                     .fillMaxWidth()
                     .onFocusChanged { focusState ->
                         isFocused = focusState.isFocused
+                        expand(isFocused)
                     },
-                cursorBrush = SolidColor(ColorTheme.colors.liteMain),
+                cursorBrush = SolidColor(ColorTheme.colors.primary.normal),
                 textStyle = TextStyle(
                     fontSize = 14.sp,
-                    color = if (done) ColorTheme.colors.placeHolder else ColorTheme.colors.black
+                    color = if (done) ColorTheme.colors.gray.normal else ColorTheme.colors.black
                 ),
                 decorationBox = { innerTextField ->
                     if (value.isEmpty()) {
                         Text(
                             text = hint,
-                            color = ColorTheme.colors.placeHolder,
+                            color = ColorTheme.colors.gray.normal,
                             fontSize = 14.sp,
                             modifier = modifier.align(Alignment.CenterStart)
                         )

@@ -84,18 +84,15 @@ enum class TransitionDirection {
 }
 
 private val transitionMap = mapOf(
-    "home" to mapOf(
-        "profile" to TransitionDirection.RIGHT,
-        "move" to TransitionDirection.LEFT
+    "start" to mapOf(
+        "login" to TransitionDirection.RIGHT,
+        "signup" to TransitionDirection.RIGHT
     ),
-    "profile" to mapOf(
-        "home" to TransitionDirection.LEFT,
-        "move" to TransitionDirection.LEFT
+    "login" to mapOf(
+        "start" to TransitionDirection.LEFT,
     ),
-    "move" to mapOf(
-        "home" to TransitionDirection.RIGHT,
-        "profile" to TransitionDirection.RIGHT,
-        "signMove" to TransitionDirection.CUSTOM
+    "signup" to mapOf(
+        "start" to TransitionDirection.LEFT,
     ),
     "signMove" to mapOf(
         "home" to TransitionDirection.RIGHT,
@@ -113,8 +110,6 @@ fun getEnterTransition(initial: NavBackStackEntry, target: NavBackStackEntry): E
     val to = target.destination.route
 
     return when {
-        from == "move" && to == "signMove" -> slideInVertically { it } + fadeIn()
-        from == "signMove" && to == "move" -> slideInVertically { -it } + fadeIn()
         getTransitionDirection(from, to) == TransitionDirection.LEFT -> slideInHorizontally { -it } + fadeIn()
         getTransitionDirection(from, to) == TransitionDirection.RIGHT -> slideInHorizontally { it } + fadeIn()
         getTransitionDirection(from, to) == TransitionDirection.UP -> slideInVertically { -it } + fadeIn()
@@ -128,8 +123,6 @@ fun getExitTransition(initial: NavBackStackEntry, target: NavBackStackEntry): Ex
     val to = target.destination.route
 
     return when {
-        from == "move" && to == "signMove" -> slideOutVertically { -it } + fadeOut()
-        from == "signMove" && to == "move" -> slideOutVertically { it } + fadeOut()
         getTransitionDirection(from, to) == TransitionDirection.LEFT -> slideOutHorizontally { it } + fadeOut()
         getTransitionDirection(from, to) == TransitionDirection.RIGHT -> slideOutHorizontally { -it } + fadeOut()
         getTransitionDirection(from, to) == TransitionDirection.UP -> slideOutVertically { -it } + fadeOut()

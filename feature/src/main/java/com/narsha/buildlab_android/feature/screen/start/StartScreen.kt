@@ -55,7 +55,7 @@ fun StartScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = ColorTheme.colors.bg)
+            .background(color = ColorTheme.colors.background)
     ) {
         Box(
             modifier = Modifier
@@ -63,53 +63,56 @@ fun StartScreen(
                 .padding(horizontal = 32.dp)
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .align(alignment = Alignment.Center)
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.buildlabicon),
+                    painter = painterResource(R.drawable.buildlab_text),
                     contentDescription = null,
-                    modifier = Modifier.width(60.dp)
+                    modifier = Modifier
+                        .width(150.dp)
                 )
-                Spacer(Modifier.height(38.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Text(
                     text = "직접 만든 AI를 경험해 보세요",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(600),
-                    color = ColorTheme.colors.black
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = ColorTheme.colors.black,
                 )
-                Spacer(Modifier.height(200.dp))
+                Spacer(modifier = Modifier.height(105.dp))
             }
+
             Column(
                 modifier = Modifier
-                    .navigationBarsPadding()
-                    .padding(bottom = 12.dp)
-                    .align(alignment = Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+                    .align(alignment = Alignment.BottomCenter),
             ) {
                 MainButton(
-                    enable = uiState !is StartUiState.Loading,
-                    text = if (uiState is StartUiState.Loading) "로딩 중..." else "로그인",
                     onClick = {
-                        show = true
+                        show = !show
                     },
+                    text = "로그인",
+                    enable = true,
                     loading = false
                 )
-                Spacer(Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(14.dp))
                 SecondButton(
-                    text = "회원가입",
                     onClick = {
                         navigateToSignUp()
-                    }
+                    },
+                    text = "회원가입"
                 )
-                Spacer(Modifier.height(22.dp))
             }
         }
         if (show) {
             ModalBottomSheet(
                 onDismissRequest = { show = false },
                 sheetState = bottomSheet,
-                containerColor = ColorTheme.colors.bg
+                containerColor = ColorTheme.colors.background
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -118,7 +121,7 @@ fun StartScreen(
                         .padding(horizontal = 32.dp)
                         .navigationBarsPadding()
                 ) {
-                    Text("로그인 방법 선택", fontSize = 16.sp, color = ColorTheme.colors.textGray)
+                    Text("로그인 방법 선택", fontSize = 16.sp, color = ColorTheme.colors.gray.dark)
                     Spacer(Modifier.height(20.dp))
                     Row {
                         Image(
@@ -156,13 +159,13 @@ fun StartScreen(
                     Row {
                         Text(
                             text = "계정이 기억나지 않나요?",
-                            color = ColorTheme.colors.placeHolder,
+                            color = ColorTheme.colors.gray.dark,
                             fontSize = 14.sp
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
                             text = "계정 찾기",
-                            color = ColorTheme.colors.liteMain,
+                            color = ColorTheme.colors.primary.normal,
                             fontSize = 14.sp,
                             textDecoration = TextDecoration.Underline
                         )

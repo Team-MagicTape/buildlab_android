@@ -37,7 +37,7 @@ fun CircleProgress(
             repeatMode = RepeatMode.Restart
         )
     )
-    val color = ColorTheme.colors.liteMain
+    val color = ColorTheme.colors.primary.normal
 
     Canvas(modifier = modifier.size(size = 16.dp)) {
         val startAngle = 5f
