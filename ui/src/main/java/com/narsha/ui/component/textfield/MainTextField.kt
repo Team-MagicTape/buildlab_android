@@ -36,7 +36,8 @@ fun MainTextField(
     imeAction: ImeAction = ImeAction.Default,
     onImeAction: () -> Unit = {},
     isPassword: Boolean = false, // 비밀번호 필드 여부
-    isTitle: Boolean = true
+    isTitle: Boolean = true,
+    onFocusChanged: ((Boolean) -> Unit)? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -74,6 +75,7 @@ fun MainTextField(
                 .height(50.dp)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
+                    onFocusChanged?.invoke(focusState.isFocused)
                 }
                 .border(
                     width = 1.dp,

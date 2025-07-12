@@ -14,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.narsha.buildlab_android.feature.screen.auth.signup.model.EmailUiState
 import com.narsha.buildlab_android.feature.screen.auth.signup.model.SignUpUiState
@@ -33,6 +35,7 @@ fun SignUpScreen(
     viewModel: SignViewModel = viewModel(),
 ) {
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val uiState = viewModel.state.collectAsState()
 
@@ -42,6 +45,14 @@ fun SignUpScreen(
 
     var done by remember { mutableStateOf(false) }
     val buttonLevel by viewModel.buttonLevel.collectAsState()
+    
+    // 키보드 상태를 감지하기 위한 상태
+    var isKeyboardVisible by remember { mutableStateOf(false) }
+    var screenHeight by remember { mutableStateOf(0) }
+    var currentHeight by remember { mutableStateOf(0) }
+    
+    // 포커스 상태를 감지하여 키보드 표시 여부 추정
+    val isFocused = remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.value.verifyUiState) {
         when (uiState.value.verifyUiState) {
@@ -65,17 +76,29 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(ColorTheme.colors.background)
+                .onSizeChanged { size ->
+                    if (screenHeight == 0) {
+                        screenHeight = size.height
+                    }
+                    currentHeight = size.height
+                    // 키보드가 올라왔는지 감지 (화면 높이의 15% 이상 줄어들었을 때)
+                    isKeyboardVisible = screenHeight > 0 && (screenHeight - currentHeight) > (screenHeight * 0.15)
+                }
                 .clickable(indication = null, interactionSource = null) {
                     focusManager.clearFocus()
+                    isFocused.value = false
+                    isKeyboardVisible = false
                 }
                 .padding(paddingValues)
-                .padding(horizontal = 32.dp),
+                .padding(
+                    horizontal = if (isKeyboardVisible) 0.dp else 32.dp
+                ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 60.dp)
+                    .padding(top = if (isKeyboardVisible) 20.dp else 60.dp)
             ) {
                 val slideAnimation = remember {
                     slideInVertically(
@@ -108,7 +131,10 @@ fun SignUpScreen(
                             onImeAction = {
                                 focusManager.moveFocus(FocusDirection.Next)
                             },
-                            isTitle = true
+                            isTitle = true,
+                            onFocusChanged = { focused ->
+                                isFocused.value = focused
+                            }
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         MainTextField(
@@ -123,8 +149,13 @@ fun SignUpScreen(
                             imeAction = ImeAction.Done,
                             onImeAction = {
                                 focusManager.clearFocus()
+                                isFocused.value = false
+                                isKeyboardVisible = false
                             },
-                            isTitle = true
+                            isTitle = true,
+                            onFocusChanged = { focused ->
+                                isFocused.value = focused
+                            }
                         )
                     }
                 }
@@ -141,12 +172,15 @@ fun SignUpScreen(
                     enable = email.isNotEmpty(),
                     title = "이메일",
                     isTitle = true,
+                    expand = { focused ->
+                        isFocused.value = focused
+                    }
                 )
                 Spacer(Modifier.height(8.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 14.dp),
+                        .padding(horizontal = if (isKeyboardVisible) 0.dp else 14.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     uiState.value.codes.forEachIndexed { index, code ->
@@ -174,6 +208,9 @@ fun SignUpScreen(
                                     else if (newValue.isEmpty() && currentValue.isNotEmpty()) {
                                         focusManager.moveFocus(FocusDirection.Left)
                                     }
+                                },
+                                onFocusChanged = { focused ->
+                                    isFocused.value = focused
                                 }
                             )
                         }
@@ -209,33 +246,36 @@ fun SignUpScreen(
 //                )
             }
 
-            MainButton(
-                onClick = {
-                    when (buttonLevel) {
-                        0 -> viewModel.emailRequest(email = email)
-                        1 -> viewModel.verifyEmail(code = uiState.value.codes.joinToString(""), email = email)
-                        2 -> viewModel.signUp(
-                            username = username,
-                            email = email,
-                            password = password,
-                            registrationToken = (uiState.value.verifyUiState as VerifyUiState.Success).registrationToken
-                        )
-                    }
-                },
-                text = when (buttonLevel) {
-                    0 -> "인증하기"
-                    1 -> "인증완료"
-                    2 -> "회원가입"
-                    else -> "다음"
-                },
-                enable = email.isNotEmpty(),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .navigationBarsPadding()
-                    .imePadding()
-                    .padding(bottom = 16.dp),
-                loading = uiState.value.emailUiState == EmailUiState.Loading
-            )
+            // 키보드가 보이지 않을 때만 하단 버튼 표시
+            if (!isKeyboardVisible) {
+                MainButton(
+                    onClick = {
+                        when (buttonLevel) {
+                            0 -> viewModel.emailRequest(email = email)
+                            1 -> viewModel.verifyEmail(code = uiState.value.codes.joinToString(""), email = email)
+                            2 -> viewModel.signUp(
+                                username = username,
+                                email = email,
+                                password = password,
+                                registrationToken = (uiState.value.verifyUiState as VerifyUiState.Success).registrationToken
+                            )
+                        }
+                    },
+                    text = when (buttonLevel) {
+                        0 -> "인증하기"
+                        1 -> "인증완료"
+                        2 -> "회원가입"
+                        else -> "다음"
+                    },
+                    enable = email.isNotEmpty(),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .navigationBarsPadding()
+                        .imePadding()
+                        .padding(bottom = 16.dp),
+                    loading = uiState.value.emailUiState == EmailUiState.Loading
+                )
+            }
         }
     }
 }
